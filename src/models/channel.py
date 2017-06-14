@@ -3,7 +3,7 @@ src/models/channel.py: Channel Mapping Object
 Copyright 2017-2018 LinhHo Training.
 """
 
-from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, Integer, func, String, Boolean, TIMESTAMP, ForeignKey
 from db import Base
 
 
@@ -17,8 +17,8 @@ class Channel_Model(Base):
     state = Column(String(120), unique=True)
     status = Column(String(120), unique=True)
     shared_with = Column(String(120), unique=True)
-    created_at = Column(TIMESTAMP)
-    updated_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP, nullable=False, server_default=func.now())
+    updated_at = Column(TIMESTAMP, nullable=False, server_default=func.now())
 
     def __init__(self,
                  id,
@@ -40,11 +40,11 @@ class Channel_Model(Base):
         self.status = status
         self.shared_with = shared_with
         self.created_at = created_at
-        self.updated_at = updated_at
+        self.updated_at = created_at
 
     def serialize(self):
         return {
-            'id': self.id,
+            'id': int(self.id),
             'name': self.name,
             'owner': self.owner,
             'org_id': self.org_id,
